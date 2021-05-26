@@ -1,6 +1,6 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList } from "react-native";
+import TodoItem from "./components/todoItem";
 
 const App = () => {
   const [todoText, setTodoText] = useState("");
@@ -11,7 +11,11 @@ const App = () => {
   };
 
   const handleList = () => {
-    setTodoList((todoList) => [...todoList, todoText]);
+    setTodoList(todoList => [
+      ...todoList,
+      {id:Math.random().toString(), value:todoText}
+      ]);
+
     setTodoText('')
   };
 
@@ -34,21 +38,15 @@ const App = () => {
           />
           <Button style={styles.joinButton} onPress={handleList} title="ADD" />
         </View>
-
-        {todoList.map((todo, index) => (
-          <View key={index} style={styles.todoCard}>
-            <Text style={styles.todoText}>{todo}</Text>
-            <Button
-              style={styles.joinButton}
-              onPress={() => handleListDel(todo)}
-              title="DEL"
-            />
-          </View>
-        ))}
-        
+        <FlatList
+            keyExtractor={(item,index)=>item.id}
+            data={todoList}
+            renderItem={itemData => (
+              <TodoItem title={itemData.item.value}/>
+            )}
+        />
       </View>
     </View>
-
   );
 };
 
